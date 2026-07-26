@@ -1,0 +1,13 @@
+{
+  "classified_capture_ids": [],
+  "note_content_hashes": {},
+  "last_classify_at": null,
+  "last_link_at": null,
+  "last_graph_at": null,
+  "counts": {
+    "captures": 18,
+    "wiki_notes": 0,
+    "links_created": 0
+  },
+  "errors": []
+}

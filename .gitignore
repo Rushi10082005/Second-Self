@@ -1,0 +1,26 @@
+.env
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.Python
+*.egg-info/
+.dist-info/
+.pytest_cache/
+.mypy_cache/
+.DS_Store
+
+# Local captures (keep private; commit sanitized wiki only for deploy)
+raw/*
+!raw/.gitkeep
+
+# Derived data (optional: commit graph/embeddings for deploy)
+# data/embeddings.json
+
+# ML caches
+.cache/
+.huggingface/
+
+# Scratch & temporary files
+Test.txt
+*.log

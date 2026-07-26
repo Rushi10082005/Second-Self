@@ -1,0 +1,17 @@
+# Default configuration; overridden by environment variables (see lib/config.py)
+
+paths:
+  raw_dir: raw
+  wiki_dir: wiki
+  data_dir: data
+
+groq:
+  model: llama-3.3-70b-versatile
+  max_tokens: 1024
+
+embeddings:
+  model: all-MiniLM-L6-v2
+  similarity_threshold: 0.78
+
+rag:
+  top_k: 5
