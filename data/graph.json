@@ -1,0 +1,517 @@
+{
+  "meta": {
+    "generated_at": "2026-08-02T22:25:27.250074+00:00",
+    "note_count": 38,
+    "edge_count": 40
+  },
+  "nodes": [
+    {
+      "id": "database-choice-evaluation",
+      "label": "Database Choice Evaluation",
+      "para": "Archives",
+      "summary": "Evaluation of SQLite vs Markdown files for SecondSelf MVP, considering factors like readability and version control compatibility. The decision was made in favor of Markdown files due to their local human readability, version control compatibility with Git, and seamless integration with Obsidian and Logseq.",
+      "excerpt": "Evaluated SQLite vs Markdown frontmatter files for SecondSelf MVP. Decision: Markdown files preserve local human readability, version control compatibility with Git, and seamless Obsidian/Logseq in..."
+    },
+    {
+      "id": "demo-video-capture",
+      "label": "Demo Video Capture",
+      "para": "Archives",
+      "summary": "A demo note for testing the SecondSelf capture and auto-classification pipeline for a demonstration video.",
+      "excerpt": "Testing SecondSelf capture and auto-classification pipeline for demonstration video"
+    },
+    {
+      "id": "knowledge-graph-video-upload",
+      "label": "Knowledge Graph Video Upload",
+      "para": "Archives",
+      "summary": "A video about knowledge graphs was uploaded on July 21st. This note serves as a historical reference to the upload event.",
+      "excerpt": "* Date: July 21st The knowledge graph video was uploaded on this date for reference and archival purposes. - [[knowledge-graph-video]]"
+    },
+    {
+      "id": "knowledge-graph-video",
+      "label": "Knowledge Graph Video",
+      "para": "Archives",
+      "summary": "A recorded video of a knowledge graph was added on July 21st. This note serves as a historical reference to the addition of the video.",
+      "excerpt": "A recorded video of the knowledge graph was added to the Streamlit app on July 21st. This video is now available for reference. - [[knowledge-graph-video-upload]] - [[streamlit-app-update]]"
+    },
+    {
+      "id": "arch-note",
+      "label": "Architecture Note",
+      "para": "Areas",
+      "summary": "System architecture and design patterns.",
+      "excerpt": "Detailed documentation about system architecture."
+    },
+    {
+      "id": "daily-productivity-log",
+      "label": "Daily Productivity Log",
+      "para": "Areas",
+      "summary": "A log of daily productivity, tracking work done in various areas.",
+      "excerpt": "Today, I have done productive work in AB 1."
+    },
+    {
+      "id": "groq-api-setup-guide",
+      "label": "Groq API Setup Guide",
+      "para": "Areas",
+      "summary": "Guide for configuring Groq API key and models.",
+      "excerpt": "Follow these steps to setup Groq."
+    },
+    {
+      "id": "second-self-architecture",
+      "label": "Second Self System Architecture",
+      "para": "Areas",
+      "summary": "The Second Self system is an end-to-end personal knowledge system that captures, organizes, relates, visualizes, and queries information. It is designed to be a public app with a focus on natural language querying and semantic connections.",
+      "excerpt": "The Second Self system is designed to be a comprehensive personal knowledge system. It has several key components, including capture, organization, relation, visualization, and querying. - **Captur..."
+    },
+    {
+      "id": "secondself-architecture",
+      "label": "SecondSelf System Architecture",
+      "para": "Areas",
+      "summary": "SecondSelf is an end-to-end personal knowledge system that captures, organizes, relates, visualizes, and queries information. The system architecture is designed to be scalable, flexible, and maintainable, with a focus on simplicity and ease of use.",
+      "excerpt": "The SecondSelf system architecture is designed to support the creation of a personal knowledge system. The system consists of several components, including capture, organize, relate, visualize, and..."
+    },
+    {
+      "id": "secondself-pkm-architecture",
+      "label": "SecondSelf PKM Architecture",
+      "para": "Areas",
+      "summary": "Overview of SecondSelf PKM system architecture and its integration with PARA method for personal knowledge management. This note explores the structural components and classification system.",
+      "excerpt": "The SecondSelf PKM system is designed to manage personal knowledge effectively. It utilizes the PARA method, which categorizes information into Projects, Areas, Resources, and Archives. - **Data St..."
+    },
+    {
+      "id": "standalone-note",
+      "label": "Standalone Note",
+      "para": "Areas",
+      "summary": "Standalone summary",
+      "excerpt": "No links here."
+    },
+    {
+      "id": "e2e-note-testing-pipeline",
+      "label": "E2E Note Testing Pipeline",
+      "para": "Projects",
+      "summary": "This note outlines the execution of a full end-to-end testing pipeline for Phase 7. It covers the process of testing the entire workflow from start to finish.",
+      "excerpt": "The goal of this project is to ensure that the entire pipeline is functioning as expected. This involves testing all components and workflows to identify any issues or bottlenecks."
+    },
+    {
+      "id": "note-alpha",
+      "label": "Note Alpha",
+      "para": "Projects",
+      "summary": "Summary of Alpha",
+      "excerpt": "Body of Alpha pointing to [[note-beta]]. - [[note-beta]]"
+    },
+    {
+      "id": "streamlit-app-update",
+      "label": "Streamlit App Update",
+      "para": "Projects",
+      "summary": "A recorded video of the knowledge graph was added to the Streamlit app on July 21st.",
+      "excerpt": "A new feature was added to the Streamlit app: a recorded video of the knowledge graph. The video was added on July 21st. - [[knowledge-graph-video]]"
+    },
+    {
+      "id": "test-para-note",
+      "label": "Test PARA Note",
+      "para": "Projects",
+      "summary": "A test note for PARA storage",
+      "excerpt": "Body text goes here."
+    },
+    {
+      "id": "all-minilm-l6-v2-model",
+      "label": "All MiniLM L6 V2 Model",
+      "para": "Resources",
+      "summary": "The all-MiniLM-L6-v2 model is a sentence transformer model available on Hugging Face, used for sentence similarity and feature extraction tasks. It can be used with libraries such as sentence-transformers and Transformers.",
+      "excerpt": "The all-MiniLM-L6-v2 model is a pre-trained language model that can be fine-tuned for various natural language processing tasks, particularly sentence similarity and feature extraction. To use the ..."
+    },
+    {
+      "id": "cli-note-example",
+      "label": "CLI Note Example",
+      "para": "Resources",
+      "summary": "A simple note about using the command line interface.",
+      "excerpt": "My first CLI note text"
+    },
+    {
+      "id": "cli-test-note",
+      "label": "CLI Test Note",
+      "para": "Resources",
+      "summary": "A note about CLI testing, containing initial text for reference.",
+      "excerpt": "My first CLI note text"
+    },
+    {
+      "id": "empty-note",
+      "label": "Empty Note",
+      "para": "Resources",
+      "summary": "This is an empty note with no content.",
+      "excerpt": "There is no content in this note."
+    },
+    {
+      "id": "example-domain-docs",
+      "label": "Example Domain Documentation",
+      "para": "Resources",
+      "summary": "The example domain is for use in documentation examples without needing permission. It should be avoided in operations.",
+      "excerpt": "The example domain is a reserved domain for use in documentation examples. * Use in documentation examples without needing permission * Avoid use in operations For more information, visit the [offi..."
+    },
+    {
+      "id": "example-domain-guide",
+      "label": "Example Domain Documentation",
+      "para": "Resources",
+      "summary": "The example domain is for use in documentation examples without needing permission. It should be avoided in operations.",
+      "excerpt": "The example domain is a reserved domain for use in documentation examples. * Avoid using the example domain in operations. * Use the example domain for documentation purposes only. Learn more about..."
+    },
+    {
+      "id": "example-domain-info",
+      "label": "Example Domain Info",
+      "para": "Resources",
+      "summary": "The example domain is for use in documentation examples without needing permission. It should be avoided in operations.",
+      "excerpt": "The example domain is for use in documentation examples without needing permission. Avoid use in operations. Learn more at https://example.com - [[example-domain-docs]] - [[example-domain-guide]]"
+    },
+    {
+      "id": "groq-llm-integration",
+      "label": "Groq LLM Integration",
+      "para": "Resources",
+      "summary": "This note outlines the strategy for integrating Groq API with llama-3.3-70b-versatile for structured JSON extraction and RAG answer synthesis. It highlights key parameters for the integration.",
+      "excerpt": "Using Groq API with llama-3.3-70b-versatile for structured JSON extraction and RAG answer synthesis. * Max tokens: 1024 * JSON mode with strict Pydantic/dataclass schema validation * Exponential ba..."
+    },
+    {
+      "id": "groq-supported-models",
+      "label": "Groq Supported Models",
+      "para": "Resources",
+      "summary": "Groq provides various AI models for text generation, speech to text, and image recognition. The documentation covers model compatibility, API references, and guides for getting started.",
+      "excerpt": "Groq offers a range of AI models for different use cases. The models are compatible with OpenAI and provide features such as text generation, speech to text, and image recognition. * Text Generatio..."
+    },
+    {
+      "id": "note-beta",
+      "label": "Note Beta",
+      "para": "Resources",
+      "summary": "Summary of Beta",
+      "excerpt": "Body of Beta pointing back to [[note-alpha]]. - [[note-alpha]]"
+    },
+    {
+      "id": "para-method-guide",
+      "label": "PARA Method Overview",
+      "para": "Resources",
+      "summary": "The PARA method is a personal knowledge management system that organizes notes into four primary buckets: Projects, Areas, Resources, and Archives. This method helps individuals manage their tasks, responsibilities, and reference materials effectively.",
+      "excerpt": "The PARA method is a simple yet effective way to organize your notes and tasks. It consists of four primary buckets: * **Projects**: Active tasks with deadlines * **Areas**: Ongoing responsibilitie..."
+    },
+    {
+      "id": "python-subprocess-guidance",
+      "label": "Python Subprocess Guidance",
+      "para": "Resources",
+      "summary": "Best practices for executing subprocesses and background processes in Python, including avoiding blocking calls and handling process exit codes.",
+      "excerpt": "Best practices for subagents and background process execution: * Avoid blocking the main event loop with synchronous wait calls * Use reactive notifications upon process exit code completion * Capt..."
+    },
+    {
+      "id": "rushikesh-ingale-links",
+      "label": "Rushikesh Ingale Links",
+      "para": "Resources",
+      "summary": "Collection of links related to Rushikesh Ingale, including LinkedIn profile and Groq console settings.",
+      "excerpt": "* [Rushikesh Ingale LinkedIn Profile](https://www.linkedin.com/in/rushikesh-ingale-0277aa30b/) * [Groq Console Settings](https://console.groq.com/settings/limits)"
+    },
+    {
+      "id": "sample-doc-testing",
+      "label": "Sample Doc Testing",
+      "para": "Resources",
+      "summary": "A sample document for Phase 1 testing purposes, containing basic file text content.",
+      "excerpt": "This is a sample file used for testing purposes in Phase 1. It contains basic text content. - [[sample-document]] - [[sample-file-content]]"
+    },
+    {
+      "id": "sample-document",
+      "label": "Sample Document",
+      "para": "Resources",
+      "summary": "A sample document for testing purposes, containing text content for Phase 1.",
+      "excerpt": "This document contains sample text content for Phase 1 testing. - [[sample-doc-testing]] - [[sample-file-content]]"
+    },
+    {
+      "id": "sample-file-content",
+      "label": "Sample File Content",
+      "para": "Resources",
+      "summary": "A sample file content used for Phase 1 testing.",
+      "excerpt": "Sample file text content for Phase 1 testing. - [[sample-doc-testing]] - [[sample-document]]"
+    },
+    {
+      "id": "second-self-edge-cases",
+      "label": "Second Self Edge Cases",
+      "para": "Resources",
+      "summary": "A catalog of failure modes, boundary conditions, and ambiguous inputs for SecondSelf, including handling and prioritization guidelines. This document serves as a reference for implementation, testing, and maintenance of the SecondSelf system.",
+      "excerpt": "This document outlines various edge cases and corner scenarios for the SecondSelf system, derived from the architecture and implementation plans. - During implementation: handle or explicitly defer..."
+    },
+    {
+      "id": "sentence-transformers-all-minilm-l6-v2",
+      "label": "sentence-transformers all-MiniLM-L6-v2",
+      "para": "Resources",
+      "summary": "The sentence-transformers/all-MiniLM-L6-v2 model is a pre-trained language model for sentence similarity tasks. It can be used with libraries such as sentence-transformers and Transformers for tasks like feature extraction and text embeddings.",
+      "excerpt": "The sentence-transformers/all-MiniLM-L6-v2 model is a pre-trained language model that can be used for sentence similarity tasks. It is available on the Hugging Face model hub and can be used with v..."
+    },
+    {
+      "id": "source-note",
+      "label": "Source Note Title",
+      "para": "Resources",
+      "summary": "Summary text",
+      "excerpt": "Main body text of the note."
+    },
+    {
+      "id": "streamlit-custom-components",
+      "label": "Streamlit Custom Components",
+      "para": "Resources",
+      "summary": "Streamlit custom components allow extending apps beyond built-in widgets with custom UI elements, offering better performance and multiple callbacks. The documentation covers V2 components, including backend and frontend implementation.",
+      "excerpt": "Streamlit custom components extend your app beyond built-in widgets with custom UI elements. There are two versions of custom components: V1 and V2. V2 components offer better performance and multi..."
+    },
+    {
+      "id": "test-capture-note",
+      "label": "Test Capture Note",
+      "para": "Resources",
+      "summary": "A test note to verify capture functionality with UTF-8 support.",
+      "excerpt": "This is a test capture note with UTF-8 support: \ud83d\udc4c"
+    },
+    {
+      "id": "vector-embeddings-thresholds",
+      "label": "Vector Embeddings Thresholds",
+      "para": "Resources",
+      "summary": "Notes on vector embeddings and similarity thresholds for automatic note linking. The sentence-transformers/all-MiniLM-L6-v2 model is used to produce 384-dimensional dense vectors. A cosine similarity threshold of 0.78 is selected to reduce false positive connections.",
+      "excerpt": "The sentence-transformers/all-MiniLM-L6-v2 model produces 384-dimensional dense vectors. A cosine similarity threshold of 0.78 is selected for automatic note linking to reduce false positive connec..."
+    },
+    {
+      "id": "visjs-force-directed-graph",
+      "label": "Vis.js Force Directed Graph",
+      "para": "Resources",
+      "summary": "A guide to using Vis.js Network for rendering interactive graph node structures in Streamlit HTML components, supporting various features like node coloring and hover tooltips.",
+      "excerpt": "Using Vis.js Network for rendering interactive graph node structures in Streamlit HTML components. * Node coloring by PARA category * Dynamic edge thickness based on similarity score * Hover toolti..."
+    }
+  ],
+  "edges": [
+    {
+      "source": "knowledge-graph-video-upload",
+      "target": "knowledge-graph-video",
+      "type": "similarity",
+      "weight": 1.0
+    },
+    {
+      "source": "knowledge-graph-video-upload",
+      "target": "knowledge-graph-video",
+      "type": "explicit_link",
+      "weight": 1.0
+    },
+    {
+      "source": "knowledge-graph-video",
+      "target": "knowledge-graph-video-upload",
+      "type": "similarity",
+      "weight": 1.0
+    },
+    {
+      "source": "knowledge-graph-video",
+      "target": "streamlit-app-update",
+      "type": "similarity",
+      "weight": 1.0
+    },
+    {
+      "source": "knowledge-graph-video",
+      "target": "knowledge-graph-video-upload",
+      "type": "explicit_link",
+      "weight": 1.0
+    },
+    {
+      "source": "knowledge-graph-video",
+      "target": "streamlit-app-update",
+      "type": "explicit_link",
+      "weight": 1.0
+    },
+    {
+      "source": "note-alpha",
+      "target": "note-beta",
+      "type": "similarity",
+      "weight": 1.0
+    },
+    {
+      "source": "note-alpha",
+      "target": "note-beta",
+      "type": "explicit_link",
+      "weight": 1.0
+    },
+    {
+      "source": "streamlit-app-update",
+      "target": "knowledge-graph-video",
+      "type": "similarity",
+      "weight": 1.0
+    },
+    {
+      "source": "streamlit-app-update",
+      "target": "knowledge-graph-video",
+      "type": "explicit_link",
+      "weight": 1.0
+    },
+    {
+      "source": "all-minilm-l6-v2-model",
+      "target": "sentence-transformers-all-minilm-l6-v2",
+      "type": "similarity",
+      "weight": 1.0
+    },
+    {
+      "source": "all-minilm-l6-v2-model",
+      "target": "sentence-transformers-all-minilm-l6-v2",
+      "type": "explicit_link",
+      "weight": 1.0
+    },
+    {
+      "source": "example-domain-docs",
+      "target": "example-domain-guide",
+      "type": "similarity",
+      "weight": 1.0
+    },
+    {
+      "source": "example-domain-docs",
+      "target": "example-domain-info",
+      "type": "similarity",
+      "weight": 1.0
+    },
+    {
+      "source": "example-domain-docs",
+      "target": "example-domain-guide",
+      "type": "explicit_link",
+      "weight": 1.0
+    },
+    {
+      "source": "example-domain-docs",
+      "target": "example-domain-info",
+      "type": "explicit_link",
+      "weight": 1.0
+    },
+    {
+      "source": "example-domain-guide",
+      "target": "example-domain-docs",
+      "type": "similarity",
+      "weight": 1.0
+    },
+    {
+      "source": "example-domain-guide",
+      "target": "example-domain-info",
+      "type": "similarity",
+      "weight": 1.0
+    },
+    {
+      "source": "example-domain-guide",
+      "target": "example-domain-docs",
+      "type": "explicit_link",
+      "weight": 1.0
+    },
+    {
+      "source": "example-domain-guide",
+      "target": "example-domain-info",
+      "type": "explicit_link",
+      "weight": 1.0
+    },
+    {
+      "source": "example-domain-info",
+      "target": "example-domain-docs",
+      "type": "similarity",
+      "weight": 1.0
+    },
+    {
+      "source": "example-domain-info",
+      "target": "example-domain-guide",
+      "type": "similarity",
+      "weight": 1.0
+    },
+    {
+      "source": "example-domain-info",
+      "target": "example-domain-docs",
+      "type": "explicit_link",
+      "weight": 1.0
+    },
+    {
+      "source": "example-domain-info",
+      "target": "example-domain-guide",
+      "type": "explicit_link",
+      "weight": 1.0
+    },
+    {
+      "source": "note-beta",
+      "target": "note-alpha",
+      "type": "similarity",
+      "weight": 1.0
+    },
+    {
+      "source": "note-beta",
+      "target": "note-alpha",
+      "type": "explicit_link",
+      "weight": 1.0
+    },
+    {
+      "source": "sample-doc-testing",
+      "target": "sample-document",
+      "type": "similarity",
+      "weight": 1.0
+    },
+    {
+      "source": "sample-doc-testing",
+      "target": "sample-file-content",
+      "type": "similarity",
+      "weight": 1.0
+    },
+    {
+      "source": "sample-doc-testing",
+      "target": "sample-document",
+      "type": "explicit_link",
+      "weight": 1.0
+    },
+    {
+      "source": "sample-doc-testing",
+      "target": "sample-file-content",
+      "type": "explicit_link",
+      "weight": 1.0
+    },
+    {
+      "source": "sample-document",
+      "target": "sample-doc-testing",
+      "type": "similarity",
+      "weight": 1.0
+    },
+    {
+      "source": "sample-document",
+      "target": "sample-file-content",
+      "type": "similarity",
+      "weight": 1.0
+    },
+    {
+      "source": "sample-document",
+      "target": "sample-doc-testing",
+      "type": "explicit_link",
+      "weight": 1.0
+    },
+    {
+      "source": "sample-document",
+      "target": "sample-file-content",
+      "type": "explicit_link",
+      "weight": 1.0
+    },
+    {
+      "source": "sample-file-content",
+      "target": "sample-doc-testing",
+      "type": "similarity",
+      "weight": 1.0
+    },
+    {
+      "source": "sample-file-content",
+      "target": "sample-document",
+      "type": "similarity",
+      "weight": 1.0
+    },
+    {
+      "source": "sample-file-content",
+      "target": "sample-doc-testing",
+      "type": "explicit_link",
+      "weight": 1.0
+    },
+    {
+      "source": "sample-file-content",
+      "target": "sample-document",
+      "type": "explicit_link",
+      "weight": 1.0
+    },
+    {
+      "source": "sentence-transformers-all-minilm-l6-v2",
+      "target": "all-minilm-l6-v2-model",
+      "type": "similarity",
+      "weight": 1.0
+    },
+    {
+      "source": "sentence-transformers-all-minilm-l6-v2",
+      "target": "all-minilm-l6-v2-model",
+      "type": "explicit_link",
+      "weight": 1.0
+    }
+  ]
+}

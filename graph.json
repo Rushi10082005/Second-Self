@@ -1,0 +1,17 @@
+{
+  "meta": {
+    "generated_at": "2026-08-03T20:32:56.966823+00:00",
+    "note_count": 1,
+    "edge_count": 0
+  },
+  "nodes": [
+    {
+      "id": "e2e-system-architecture",
+      "label": "E2E System Architecture",
+      "para": "Projects",
+      "summary": "Architecture testing for E2E pipeline verification.",
+      "excerpt": "This document describes the end to end system architecture testing."
+    }
+  ],
+  "edges": []
+}

@@ -21,14 +21,57 @@ Verify the library skeleton:
 python -c "from lib import storage, models; storage.ensure_project_dirs(); print('OK')"
 ```
 
-## Project layout
+## End-to-End Pipeline Execution (Phase 7)
+
+Run the full end-to-end pipeline (Capture → Classify → Link → Graph → Ask) with a single command:
+
+```bash
+# Execute full pipeline script
+./scripts/pipeline.sh "My test note text" "What is tested in Phase 7?"
+```
+
+Or run individual CLI steps:
+
+```bash
+# 1. Capture
+python capture.py note "New note text"
+python capture.py link "https://example.com"
+python capture.py file path/to/document.pdf
+
+# 2. Classify (PARA)
+python classify.py
+
+# 3. Embeddings & Semantic Linking
+python link.py
+
+# 4. Knowledge Graph
+python build_graph.py
+
+# 5. RAG Question Answering
+python ask.py "What do I know about system architecture?"
+
+# 6. Streamlit Web Shell
+streamlit run app.py
+```
+
+## Testing Suite
+
+Run all automated unit and end-to-end integration tests:
+
+```bash
+pytest
+```
+
+## Project Layout
 
 | Path | Purpose |
 |------|---------|
-| `raw/` | Raw captures (Week 1) |
-| `wiki/` | Classified notes (Week 2+) |
+| `raw/` | Raw captures (Phase 1) |
+| `wiki/` | Classified notes (Phase 2+) |
 | `data/` | Manifest, embeddings, graph JSON |
 | `lib/` | Shared models, config, storage |
+| `scripts/` | Pipeline script (`pipeline.sh`) & utilities |
+| `tests/` | Automated test suite (Phase 0 to Phase 7) |
 | `Docs/` | Architecture, implementation plan, edge cases |
 
 ## Documentation
@@ -38,6 +81,6 @@ python -c "from lib import storage, models; storage.ensure_project_dirs(); print
 - [Docs/implementation-plan.md](./Docs/implementation-plan.md)
 - [Docs/edge-case.md](./Docs/edge-case.md)
 
-## Next step
+## Next Step
 
-Implement **Phase 1** — `capture.py` and populate `raw/` with 10+ real items.
+Proceed to **Phase 8** — Deploy application & configure secrets on Streamlit Cloud / HuggingFace Spaces.

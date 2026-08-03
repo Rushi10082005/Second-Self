@@ -1,4 +1,4 @@
-"""Filesystem paths, manifest helpers, and capture storage."""
+"""Filesystem paths, manifest helpers, capture storage, and wiki note storage."""
 
 from __future__ import annotations
 
@@ -10,12 +10,14 @@ from typing import Any
 import frontmatter
 
 from lib.config import get_settings, project_root
-from lib.models import Capture, CaptureType
+from lib.models import Capture, CaptureType, ParaCategory, WikiNote
 
 
 def ensure_project_dirs() -> None:
     """Create raw/, wiki/, data/, and raw/files/ if missing."""
     get_settings().ensure_dirs()
+    for cat in ParaCategory:
+        (get_settings().wiki_dir / cat.value).mkdir(parents=True, exist_ok=True)
 
 
 def raw_dir() -> Path:
@@ -97,10 +99,8 @@ def save_capture(capture: Capture) -> Path:
     """Save capture markdown file and update index.jsonl + manifest."""
     ensure_project_dirs()
 
-    # UTF-8 NFC normalization
     normalized_content = unicodedata.normalize("NFC", capture.content or "")
 
-    # ISO 8601 UTC timestamp format for filename
     dt_utc = capture.captured_at.astimezone(timezone.utc)
     ts_str = dt_utc.strftime("%Y%m%dT%H%M%SZ")
     filename = f"{ts_str}_{capture.id}.md"
@@ -123,7 +123,6 @@ def save_capture(capture: Capture) -> Path:
     post = frontmatter.Post(normalized_content, **metadata)
     file_path.write_text(frontmatter.dumps(post) + "\n", encoding="utf-8")
 
-    # Append to raw/index.jsonl
     index_entry = {
         "id": capture.id,
         "filename": filename,
@@ -136,7 +135,6 @@ def save_capture(capture: Capture) -> Path:
     with idx_path.open("a", encoding="utf-8") as f:
         f.write(json.dumps(index_entry) + "\n")
 
-    # Update manifest
     manifest = load_manifest()
     manifest["counts"]["captures"] = manifest["counts"].get("captures", 0) + 1
     save_manifest(manifest)
@@ -189,3 +187,98 @@ def list_raw_captures() -> list[tuple[Path, Capture]]:
         except Exception:
             continue
     return results
+
+
+def save_wiki_note(note: WikiNote) -> Path:
+    """Save WikiNote object into wiki/{para_category}/{slug}.md."""
+    ensure_project_dirs()
+
+    cat_str = note.para_category.value if isinstance(note.para_category, ParaCategory) else str(note.para_category)
+    cat_dir = wiki_dir() / cat_str
+    cat_dir.mkdir(parents=True, exist_ok=True)
+
+    file_path = cat_dir / f"{note.slug}.md"
+
+    metadata: dict[str, Any] = {
+        "capture_id": note.capture_id,
+        "para_category": cat_str,
+        "title": note.title,
+        "summary": note.summary,
+        "tags": note.tags,
+        "links": note.links,
+    }
+    if note.embedding_id:
+        metadata["embedding_id"] = note.embedding_id
+
+    normalized_body = unicodedata.normalize("NFC", note.body or "")
+    post = frontmatter.Post(normalized_body, **metadata)
+    file_path.write_text(frontmatter.dumps(post) + "\n", encoding="utf-8")
+
+    note.path = str(file_path)
+    return file_path
+
+
+def load_wiki_note(path: Path) -> WikiNote:
+    """Load WikiNote object from markdown file with YAML frontmatter."""
+    post = frontmatter.load(path)
+    meta = post.metadata
+
+    cat_val = meta.get("para_category", "Resources")
+    try:
+        para = ParaCategory(cat_val)
+    except ValueError:
+        para = ParaCategory.RESOURCES
+
+    slug = path.stem
+
+    return WikiNote(
+        slug=slug,
+        capture_id=str(meta.get("capture_id", "")),
+        para_category=para,
+        title=meta.get("title", slug.replace("-", " ").title()),
+        summary=meta.get("summary", ""),
+        body=post.content,
+        tags=list(meta.get("tags", [])),
+        links=list(meta.get("links", [])),
+        embedding_id=meta.get("embedding_id"),
+        path=str(path),
+    )
+
+
+def list_wiki_notes() -> list[tuple[Path, WikiNote]]:
+    """List all wiki notes across wiki/ subdirectories."""
+    if not wiki_dir().is_dir():
+        return []
+    results: list[tuple[Path, WikiNote]] = []
+    for p in sorted(wiki_dir().rglob("*.md")):
+        if p.name == ".gitkeep":
+            continue
+        try:
+            note = load_wiki_note(p)
+            results.append((p, note))
+        except Exception:
+            continue
+    return results
+
+
+def update_note_links(path: Path, link_slugs: list[str]) -> WikiNote:
+    """Update metadata links list and append/update ## Related wikilinks section idempotently."""
+    post = frontmatter.load(path)
+    clean_slugs = sorted(list(dict.fromkeys([s for s in link_slugs if s and s != path.stem])))
+    post.metadata["links"] = clean_slugs
+
+    content = post.content
+    if "## Related" in content:
+        content = content.split("## Related")[0].rstrip()
+
+    if clean_slugs:
+        related_lines = ["\n\n## Related"]
+        for slug in clean_slugs:
+            related_lines.append(f"- [[{slug}]]")
+        content = content.rstrip() + "\n".join(related_lines)
+
+    post.content = unicodedata.normalize("NFC", content)
+    file_content = frontmatter.dumps(post)
+    path.write_text(file_content + "\n", encoding="utf-8")
+    return load_wiki_note(path)
+

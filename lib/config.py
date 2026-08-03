@@ -34,8 +34,33 @@ def _load_yaml_config(root: Path) -> dict[str, Any]:
     return data if isinstance(data, dict) else {}
 
 
+def _get_secret_or_env(key: str, default: str | None = None) -> str | None:
+    """Retrieve secret from environment variable or Streamlit secrets dictionary."""
+    val = os.getenv(key)
+    if val and val.strip():
+        return val.strip()
+    try:
+        import streamlit as st
+
+        if hasattr(st, "secrets"):
+            if key in st.secrets:
+                return str(st.secrets[key]).strip()
+            if key.lower() in st.secrets:
+                return str(st.secrets[key.lower()]).strip()
+            for sec_key in ("groq", "GROQ"):
+                if sec_key in st.secrets and hasattr(st.secrets[sec_key], "get"):
+                    sub_dict = st.secrets[sec_key]
+                    if "api_key" in sub_dict:
+                        return str(sub_dict["api_key"]).strip()
+                    if "API_KEY" in sub_dict:
+                        return str(sub_dict["API_KEY"]).strip()
+    except Exception:
+        pass
+    return default
+
+
 def _env_float(name: str, default: float) -> float:
-    raw = os.getenv(name)
+    raw = _get_secret_or_env(name)
     if raw is None or raw.strip() == "":
         return default
     try:
@@ -45,7 +70,7 @@ def _env_float(name: str, default: float) -> float:
 
 
 def _env_int(name: str, default: int) -> int:
-    raw = os.getenv(name)
+    raw = _get_secret_or_env(name)
     if raw is None or raw.strip() == "":
         return default
     try:
@@ -107,9 +132,9 @@ def get_settings() -> Settings:
         raw_dir=_resolve_dir(root, "RAW_DIR", ("paths", "raw_dir"), "raw"),
         wiki_dir=_resolve_dir(root, "WIKI_DIR", ("paths", "wiki_dir"), "wiki"),
         data_dir=_resolve_dir(root, "DATA_DIR", ("paths", "data_dir"), "data"),
-        groq_api_key=os.getenv("GROQ_API_KEY") or None,
-        groq_model=os.getenv("GROQ_MODEL") or str(groq_block.get("model", "llama-3.3-70b-versatile")),
-        embedding_model=os.getenv("EMBEDDING_MODEL")
+        groq_api_key=_get_secret_or_env("GROQ_API_KEY"),
+        groq_model=_get_secret_or_env("GROQ_MODEL") or str(groq_block.get("model", "llama-3.3-70b-versatile")),
+        embedding_model=_get_secret_or_env("EMBEDDING_MODEL")
         or str(emb_block.get("model", "all-MiniLM-L6-v2")),
         similarity_threshold=_env_float(
             "SIMILARITY_THRESHOLD",
