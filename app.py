@@ -84,6 +84,32 @@ def format_timestamp(iso_str: str | None) -> str:
         return iso_str.split(".")[0]
 
 
+@st.cache_resource(show_spinner="Warming up embedding model...")
+def warm_up_embedding_model():
+    """Cache SentenceTransformer model on application cold-start."""
+    try:
+        from lib.embeddings import get_embedding_model
+        get_embedding_model()
+    except Exception:
+        pass
+
+
+@st.cache_data
+def load_graph_html_and_data():
+    """Cache graph HTML and embedded JSON to optimize Streamlit re-renders."""
+    html_path = Path(__file__).parent / "static" / "graph.html"
+    graph_json_path = Path(__file__).parent / "data" / "graph.json"
+
+    if html_path.is_file():
+        html_content = html_path.read_text(encoding="utf-8")
+        if graph_json_path.is_file():
+            graph_json_str = graph_json_path.read_text(encoding="utf-8")
+            injected_script = f"<script>window.EMBEDDED_GRAPH_DATA = {graph_json_str};</script>"
+            html_content = html_content.replace("<head>", f"<head>\n  {injected_script}", 1)
+        return html_content
+    return None
+
+
 # Load manifest data
 manifest = load_manifest()
 counts = manifest.get("counts", {})
@@ -153,30 +179,6 @@ with st.sidebar:
             st.rerun()
 
 
-@st.cache_resource(show_spinner="Warming up embedding model...")
-def warm_up_embedding_model():
-    """Cache SentenceTransformer model on application cold-start."""
-    try:
-        from lib.embeddings import get_embedding_model
-        get_embedding_model()
-    except Exception:
-        pass
-
-
-@st.cache_data
-def load_graph_html_and_data():
-    """Cache graph HTML and embedded JSON to optimize Streamlit re-renders."""
-    html_path = Path(__file__).parent / "static" / "graph.html"
-    graph_json_path = Path(__file__).parent / "data" / "graph.json"
-
-    if html_path.is_file():
-        html_content = html_path.read_text(encoding="utf-8")
-        if graph_json_path.is_file():
-            graph_json_str = graph_json_path.read_text(encoding="utf-8")
-            injected_script = f"<script>window.EMBEDDED_GRAPH_DATA = {graph_json_str};</script>"
-            html_content = html_content.replace("<head>", f"<head>\n  {injected_script}", 1)
-        return html_content
-    return None
 
 
 # Initialize cached resources
