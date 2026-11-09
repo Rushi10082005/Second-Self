@@ -70,17 +70,11 @@ export async function retrieveNotes(
     const bodyTokens = tokenize(note.content);
 
     for (const token of tokens) {
-      // Exact title match gets highest priority
       if (titleTokens.includes(token)) score += 3.5;
       if (note.title.toLowerCase().includes(token)) score += 2.0;
-
-      // Tag matches
       if (tagTokens.some((t) => t.includes(token))) score += 3.0;
-
-      // Summary matches
       if (summaryTokens.includes(token)) score += 2.0;
 
-      // Body content term frequency
       const bodyMatches = bodyTokens.filter((b) => b === token).length;
       if (bodyMatches > 0) {
         score += Math.min(2.5, 0.5 * Math.log2(1 + bodyMatches));
@@ -92,8 +86,7 @@ export async function retrieveNotes(
     }
   }
 
-  // 2. Graph-RAG 1-hop Expansion:
-  // If note A has high relevance, boost notes connected to A via similarity edges
+  // 2. Graph-RAG 1-hop Expansion
   const boostMap = new Map<string, number>();
   scores.forEach((item, slug) => {
     if (item.score > 2.0) {
@@ -109,7 +102,6 @@ export async function retrieveNotes(
     }
   });
 
-  // Apply graph boosts
   boostMap.forEach((boost, slug) => {
     const existing = scores.get(slug);
     if (existing) {
@@ -129,7 +121,6 @@ export async function retrieveNotes(
   const maxRawScore = scoredList[0]?.score || 1.0;
 
   return scoredList.slice(0, topK).map(({ note, score }) => {
-    // Normalized score between 0.65 and 0.99 for clean UX display
     const normalized = Math.min(0.99, Math.max(0.65, 0.70 + (score / maxRawScore) * 0.28));
     const snippet = note.summary
       ? `Summary: ${note.summary}\n${note.content.slice(0, 200)}...`
@@ -148,7 +139,7 @@ export async function retrieveNotes(
 }
 
 /**
- * Synthesize answer with Groq Llama 3.3 70B
+ * Non-streaming answer synthesis
  */
 export async function synthesizeAnswer(
   question: string,
@@ -208,4 +199,100 @@ export async function synthesizeAnswer(
       sources.map((s) => `- **[${s.title}]**: ${s.summary}`).join('\n')
     );
   }
+}
+
+/**
+ * Real-Time Streaming RAG via Server-Sent Events (SSE)
+ */
+export async function createRAGStream(
+  question: string,
+  sources: RetrievedSource[],
+  apiKeyOverride?: string
+): Promise<ReadableStream<Uint8Array>> {
+  const encoder = new TextEncoder();
+  const groqApiKey = apiKeyOverride || process.env.GROQ_API_KEY;
+
+  return new ReadableStream<Uint8Array>({
+    async start(controller) {
+      // 1. Emit retrieved sources first
+      const sourcesPayload = JSON.stringify({
+        type: 'sources',
+        sources,
+        graph_highlight: sources.map((s) => s.note_id),
+      });
+      controller.enqueue(encoder.encode(`data: ${sourcesPayload}\n\n`));
+
+      // 2. If no API key, emit fallback explanation
+      if (!groqApiKey) {
+        const topPicks = sources.slice(0, 3);
+        const fallbackMsg =
+          `⚠️ **Groq API key not configured.**\n\n` +
+          `Based on semantic search, the most relevant notes in your second brain are:\n\n` +
+          topPicks
+            .map(
+              (s, i) =>
+                `${i + 1}. **[${s.title}]** (${s.para} · ${(s.score * 100).toFixed(0)}% match)\n` +
+                `   > ${s.summary || s.snippet.slice(0, 160)}`
+            )
+            .join('\n\n') +
+          `\n\n*Add \`GROQ_API_KEY\` in Settings to enable real-time LLM streaming synthesis.*`;
+
+        controller.enqueue(
+          encoder.encode(`data: ${JSON.stringify({ type: 'token', text: fallbackMsg })}\n\n`)
+        );
+        controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: 'done' })}\n\n`));
+        controller.close();
+        return;
+      }
+
+      // 3. Real-time streaming from Groq
+      try {
+        const contextBlocks = sources.map(
+          (s, idx) =>
+            `### Context [${idx + 1}]: ${s.title} (slug: ${s.note_id}, category: ${s.para})\n` +
+            `Relevance: ${(s.score * 100).toFixed(0)}%\n` +
+            `${s.snippet}`
+        );
+
+        const fullPrompt = `Question: ${question}\n\n--- Retrieved Context Notes ---\n${contextBlocks.join(
+          '\n\n'
+        )}`;
+
+        const groq = new Groq({ apiKey: groqApiKey });
+        const stream = await groq.chat.completions.create({
+          model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile',
+          messages: [
+            { role: 'system', content: RAG_SYSTEM_PROMPT },
+            { role: 'user', content: fullPrompt },
+          ],
+          temperature: 0.2,
+          max_tokens: 1024,
+          stream: true,
+        });
+
+        for await (const chunk of stream) {
+          const delta = chunk.choices[0]?.delta?.content || '';
+          if (delta) {
+            controller.enqueue(
+              encoder.encode(`data: ${JSON.stringify({ type: 'token', text: delta })}\n\n`)
+            );
+          }
+        }
+
+        controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: 'done' })}\n\n`));
+      } catch (err: any) {
+        controller.enqueue(
+          encoder.encode(
+            `data: ${JSON.stringify({
+              type: 'token',
+              text: `\n\n❌ **Groq API Error**: ${err?.message || 'Synthesis failed'}`,
+            })}\n\n`
+          )
+        );
+        controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: 'done' })}\n\n`));
+      } finally {
+        controller.close();
+      }
+    },
+  });
 }

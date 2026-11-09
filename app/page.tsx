@@ -87,6 +87,43 @@ export default function HomePage() {
     setHighlightedNodes(slugs);
   };
 
+  const handleNoteSaved = (savedNote: WikiNoteItem) => {
+    setNotes((prev) => {
+      const exists = prev.some((n) => n.slug === savedNote.slug);
+      if (exists) {
+        return prev.map((n) => (n.slug === savedNote.slug ? savedNote : n));
+      }
+      return [savedNote, ...prev];
+    });
+
+    setGraphData((prev) => {
+      if (!prev) return prev;
+      const nodeIndex = prev.nodes.findIndex((n) => n.id === savedNote.slug);
+      if (nodeIndex >= 0) {
+        const updatedNodes = [...prev.nodes];
+        updatedNodes[nodeIndex] = {
+          ...updatedNodes[nodeIndex],
+          label: savedNote.title,
+          para: savedNote.para,
+          summary: savedNote.summary,
+        };
+        return { ...prev, nodes: updatedNodes };
+      } else {
+        const newNode = {
+          id: savedNote.slug,
+          label: savedNote.title,
+          para: savedNote.para,
+          summary: savedNote.summary,
+        };
+        return {
+          ...prev,
+          nodes: [newNode, ...prev.nodes],
+          meta: { ...prev.meta, note_count: prev.meta.note_count + 1 },
+        };
+      }
+    });
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-canvas text-slate-900 dark:text-slate-100 overflow-x-hidden transition-colors">
       {/* Top Navbar */}
@@ -187,6 +224,7 @@ export default function HomePage() {
               notes={notes}
               selectedSlug={selectedSlug}
               onSelectSlug={(slug) => setSelectedSlug(slug)}
+              onNoteSaved={handleNoteSaved}
             />
           )}
 

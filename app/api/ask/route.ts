@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { retrieveNotes, synthesizeAnswer } from '../../lib/rag';
+import { retrieveNotes, synthesizeAnswer, createRAGStream } from '../../lib/rag';
 
 export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { question, top_k = 5, apiKey } = body;
+    const { question, top_k = 5, apiKey, stream = true } = body;
 
     if (!question || typeof question !== 'string' || !question.trim()) {
       return NextResponse.json(
@@ -18,13 +18,23 @@ export async function POST(req: NextRequest) {
     const trimmedQuestion = question.trim();
     const topKVal = Math.min(10, Math.max(1, Number(top_k) || 5));
 
-    // 1. Retrieve most relevant notes using Graph-RAG
+    // 1. Retrieve top-k context notes using Graph-RAG
     const sources = await retrieveNotes(trimmedQuestion, topKVal);
 
-    // 2. Synthesize answer with Groq (or fallback)
-    const answer = await synthesizeAnswer(trimmedQuestion, sources, apiKey);
+    // 2. If client requests streaming (default), return SSE stream
+    if (stream) {
+      const ragStream = await createRAGStream(trimmedQuestion, sources, apiKey);
+      return new Response(ragStream, {
+        headers: {
+          'Content-Type': 'text/event-stream; charset=utf-8',
+          'Cache-Control': 'no-cache, no-transform',
+          Connection: 'keep-alive',
+        },
+      });
+    }
 
-    // 3. Highlight relevant nodes on the graph
+    // 3. Fallback: static JSON response
+    const answer = await synthesizeAnswer(trimmedQuestion, sources, apiKey);
     const graph_highlight = sources.map((s) => s.note_id);
 
     return NextResponse.json({
