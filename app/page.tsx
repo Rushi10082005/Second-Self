@@ -68,7 +68,7 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-canvas text-slate-100">
+    <div className="min-h-screen flex flex-col bg-canvas text-slate-100 overflow-x-hidden">
       {/* Top Navbar */}
       <Navbar
         stats={{
@@ -78,10 +78,10 @@ export default function HomePage() {
         onOpenSettings={() => setIsSettingsOpen(true)}
       />
 
-      {/* Main Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col">
-        {/* Navigation Tabs Bar */}
-        <div className="flex items-center justify-between mb-6 border-b border-white/[0.08] pb-3 flex-wrap gap-3">
+      {/* Main Container with responsive padding */}
+      <main className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-6 pb-24 md:pb-6 flex flex-col">
+        {/* Desktop Navigation Tabs Bar (Hidden on Mobile) */}
+        <div className="hidden md:flex items-center justify-between mb-6 border-b border-white/[0.08] pb-3 flex-wrap gap-3">
           <div className="flex items-center gap-1.5 p-1 bg-canvas-card border border-white/5 rounded-xl">
             <button
               onClick={() => setActiveTab('graph')}
@@ -135,14 +135,14 @@ export default function HomePage() {
             </button>
           </div>
 
-          <div className="hidden sm:flex items-center gap-2 text-xs text-slate-400">
+          <div className="flex items-center gap-2 text-xs text-slate-400">
             <span className="w-2 h-2 rounded-full bg-emerald-400" />
             <span>Vercel Edge Ready</span>
           </div>
         </div>
 
         {/* Tab Views */}
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col min-h-0">
           {activeTab === 'graph' && (
             <GraphView
               data={graphData}
@@ -170,6 +170,59 @@ export default function HomePage() {
           {activeTab === 'capture' && <CaptureView />}
         </div>
       </main>
+
+      {/* Mobile Bottom Navigation Bar (Phone Native Feel) */}
+      <nav className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-canvas-surface/95 backdrop-blur-xl border-t border-white/[0.1] px-2 py-1.5 pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-2xl">
+        <div className="grid grid-cols-4 gap-1">
+          <button
+            onClick={() => setActiveTab('graph')}
+            className={`flex flex-col items-center justify-center py-1.5 px-1 rounded-xl transition-all ${
+              activeTab === 'graph'
+                ? 'text-sky-400 bg-sky-500/10'
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <Share2 className="w-5 h-5 mb-0.5" />
+            <span className="text-[10px] font-medium tracking-tight">Brain</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('chat')}
+            className={`flex flex-col items-center justify-center py-1.5 px-1 rounded-xl transition-all ${
+              activeTab === 'chat'
+                ? 'text-sky-400 bg-sky-500/10'
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <MessageSquare className="w-5 h-5 mb-0.5" />
+            <span className="text-[10px] font-medium tracking-tight">Ask</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('explorer')}
+            className={`flex flex-col items-center justify-center py-1.5 px-1 rounded-xl transition-all ${
+              activeTab === 'explorer'
+                ? 'text-sky-400 bg-sky-500/10'
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <BookOpen className="w-5 h-5 mb-0.5" />
+            <span className="text-[10px] font-medium tracking-tight">Explorer</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('capture')}
+            className={`flex flex-col items-center justify-center py-1.5 px-1 rounded-xl transition-all ${
+              activeTab === 'capture'
+                ? 'text-sky-400 bg-sky-500/10'
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <Inbox className="w-5 h-5 mb-0.5" />
+            <span className="text-[10px] font-medium tracking-tight">Capture</span>
+          </button>
+        </div>
+      </nav>
 
       {/* Settings Modal */}
       <SettingsModal

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { Search, ZoomIn, Zap, Filter, ArrowUpRight, X } from 'lucide-react';
+import { Search, ZoomIn, Zap, ArrowUpRight, X, ChevronDown, ChevronUp } from 'lucide-react';
 import { GraphData } from '../app/lib/knowledge';
 
 interface GraphViewProps {
@@ -29,6 +29,7 @@ export default function GraphView({
   const [searchQuery, setSearchQuery] = useState('');
   const [physicsEnabled, setPhysicsEnabled] = useState(true);
   const [selectedNode, setSelectedNode] = useState<any>(null);
+  const [mobilePanelOpen, setMobilePanelOpen] = useState(false);
 
   useEffect(() => {
     if (!containerRef.current || !data || data.nodes.length === 0) return;
@@ -47,6 +48,8 @@ export default function GraphView({
 
       const allowedIds = new Set(filteredNodes.map((n) => n.id));
 
+      const isMobile = window.innerWidth < 640;
+
       const visNodes = filteredNodes.map((n) => {
         const cat = n.para || 'Resources';
         const colors = (PARA_COLORS as any)[cat] || PARA_COLORS.Resources;
@@ -56,14 +59,14 @@ export default function GraphView({
           id: n.id,
           label: n.label || n.id,
           shape: 'dot',
-          size: isHighlighted ? 22 : 15,
+          size: isHighlighted ? (isMobile ? 24 : 22) : (isMobile ? 18 : 15),
           color: {
             background: isHighlighted ? '#38bdf8' : colors.bg,
             border: isHighlighted ? '#ffffff' : colors.border,
             highlight: { background: colors.highlight, border: '#ffffff' },
           },
           borderWidth: isHighlighted ? 3 : 1,
-          font: { color: '#f8fafc', face: 'Inter', size: 12 },
+          font: { color: '#f8fafc', face: 'Inter', size: isMobile ? 13 : 12 },
           raw: n,
         };
       });
@@ -91,9 +94,9 @@ export default function GraphView({
         physics: {
           solver: 'forceAtlas2Based',
           forceAtlas2Based: {
-            gravitationalConstant: -50,
+            gravitationalConstant: isMobile ? -70 : -50,
             centralGravity: 0.015,
-            springLength: 90,
+            springLength: isMobile ? 110 : 90,
             springConstant: 0.08,
           },
           stabilization: { iterations: 120 },
@@ -165,90 +168,101 @@ export default function GraphView({
   };
 
   return (
-    <div className="relative w-full h-[760px] bg-canvas-muted rounded-2xl border border-white/[0.08] overflow-hidden shadow-2xl">
+    <div className="relative w-full h-[calc(100dvh-140px)] min-h-[460px] md:h-[760px] bg-canvas-muted rounded-2xl border border-white/[0.08] overflow-hidden shadow-2xl">
       {/* Vis Network Container */}
-      <div ref={containerRef} className="w-full h-full cursor-grab active:cursor-grabbing" />
+      <div ref={containerRef} className="w-full h-full cursor-grab active:cursor-grabbing touch-pan-x touch-pan-y" />
 
       {/* Top Floating Controls Overlay */}
-      <div className="absolute top-4 left-4 z-20 flex flex-col gap-3 max-w-sm">
-        {/* Header Badge */}
-        <div className="glass-panel p-4 rounded-xl shadow-xl">
-          <div className="flex items-center justify-between gap-4">
-            <span className="text-sm font-semibold text-white flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-sky-400" />
-              Force-Directed Knowledge Graph
+      <div className="absolute top-3 left-3 z-20 flex flex-col gap-2 max-w-[calc(100vw-6.5rem)] sm:max-w-sm">
+        {/* Header Badge & Search */}
+        <div className="glass-panel p-3 sm:p-4 rounded-xl shadow-xl">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-xs sm:text-sm font-semibold text-white flex items-center gap-1.5 truncate">
+              <span className="w-2 h-2 rounded-full bg-sky-400 shrink-0" />
+              <span className="truncate">Knowledge Graph</span>
             </span>
-            <span className="text-xs font-mono text-slate-400">
-              {data?.nodes.length || 0} nodes · {data?.edges.length || 0} edges
+
+            {/* Mobile collapsible toggle */}
+            <button
+              onClick={() => setMobilePanelOpen(!mobilePanelOpen)}
+              className="sm:hidden p-1 text-slate-400 hover:text-white"
+            >
+              {mobilePanelOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+            </button>
+
+            <span className="hidden sm:inline text-xs font-mono text-slate-400">
+              {data?.nodes.length || 0} nodes
             </span>
           </div>
 
-          {/* Search in graph */}
-          <form onSubmit={handleSearchNode} className="mt-3 relative">
-            <input
-              type="text"
-              placeholder="Search & locate node..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-8 pr-3 py-1.5 bg-canvas-card border border-white/10 rounded-lg text-xs text-white placeholder-slate-400 focus:outline-none focus:border-sky-500"
-            />
-            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2" />
-          </form>
+          {/* Controls body (Always visible on desktop, toggleable on mobile) */}
+          <div className={`${mobilePanelOpen ? 'block' : 'hidden sm:block'}`}>
+            <form onSubmit={handleSearchNode} className="mt-2.5 relative">
+              <input
+                type="text"
+                placeholder="Search node..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-8 pr-3 py-1.5 bg-canvas-card border border-white/10 rounded-lg text-[16px] sm:text-xs text-white placeholder-slate-400 focus:outline-none focus:border-sky-500"
+              />
+              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" />
+            </form>
 
-          {/* Category Filter Pills */}
-          <div className="mt-3 flex items-center gap-1.5 flex-wrap">
-            {['all', 'projects', 'areas', 'resources', 'archives'].map((cat) => {
-              const active = activeCategory === cat;
-              return (
-                <button
-                  key={cat}
-                  onClick={() => setActiveCategory(cat)}
-                  className={`px-2 py-1 rounded-md text-[11px] font-medium capitalize transition-all ${
-                    active
-                      ? 'bg-sky-500 text-white shadow-sm'
-                      : 'bg-white/5 text-slate-400 hover:text-white hover:bg-white/10'
-                  }`}
-                >
-                  {cat}
-                </button>
-              );
-            })}
+            {/* Category Filter Pills */}
+            <div className="mt-2.5 flex items-center gap-1 overflow-x-auto pb-1 scrollbar-none">
+              {['all', 'projects', 'areas', 'resources', 'archives'].map((cat) => {
+                const active = activeCategory === cat;
+                return (
+                  <button
+                    key={cat}
+                    onClick={() => setActiveCategory(cat)}
+                    className={`px-2 py-0.5 sm:py-1 rounded-md text-[10px] sm:text-[11px] font-medium capitalize shrink-0 transition-all ${
+                      active
+                        ? 'bg-sky-500 text-white shadow-sm'
+                        : 'bg-white/5 text-slate-400 hover:text-white hover:bg-white/10'
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
 
       {/* Floating Action Buttons */}
-      <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
+      <div className="absolute top-3 right-3 z-20 flex items-center gap-1.5 sm:gap-2">
         <button
           onClick={handleFit}
-          className="glass-panel px-3 py-2 rounded-xl text-xs font-medium text-slate-300 hover:text-white hover:bg-white/10 flex items-center gap-1.5 shadow-lg transition-all"
+          className="glass-panel p-2 sm:px-3 sm:py-2 rounded-xl text-xs font-medium text-slate-300 hover:text-white hover:bg-white/10 flex items-center gap-1 shadow-lg transition-all"
           title="Fit graph to view"
         >
-          <ZoomIn className="w-3.5 h-3.5" />
-          <span>Fit View</span>
+          <ZoomIn className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
+          <span className="hidden sm:inline">Fit</span>
         </button>
 
         <button
           onClick={handleTogglePhysics}
-          className={`glass-panel px-3 py-2 rounded-xl text-xs font-medium flex items-center gap-1.5 shadow-lg transition-all ${
+          className={`glass-panel p-2 sm:px-3 sm:py-2 rounded-xl text-xs font-medium flex items-center gap-1 shadow-lg transition-all ${
             physicsEnabled
               ? 'text-sky-400 border-sky-500/30'
               : 'text-slate-400 hover:text-white'
           }`}
           title="Toggle physics simulation"
         >
-          <Zap className="w-3.5 h-3.5" />
-          <span>{physicsEnabled ? 'Physics On' : 'Physics Frozen'}</span>
+          <Zap className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
+          <span className="hidden sm:inline">{physicsEnabled ? 'Physics On' : 'Frozen'}</span>
         </button>
       </div>
 
-      {/* Selected Node Inspector Drawer */}
+      {/* Selected Node Inspector Drawer (Mobile Friendly Bottom Card) */}
       {selectedNode && (
-        <div className="absolute bottom-4 right-4 z-30 max-w-sm w-full glass-panel p-5 rounded-2xl shadow-2xl border border-sky-500/30 animate-in slide-in-from-bottom duration-200">
+        <div className="absolute bottom-2 left-2 right-2 sm:left-auto sm:right-4 sm:bottom-4 z-30 sm:max-w-sm glass-panel p-4 sm:p-5 rounded-2xl shadow-2xl border border-sky-500/30 animate-in slide-in-from-bottom duration-200">
           <div className="flex items-start justify-between gap-2">
             <div>
               <span
-                className={`inline-block px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider mb-1.5 ${
+                className={`inline-block px-2 py-0.5 rounded text-[9px] sm:text-[10px] font-semibold uppercase tracking-wider mb-1 ${
                   selectedNode.para === 'Projects'
                     ? 'bg-red-500/20 text-red-300 border border-red-500/30'
                     : selectedNode.para === 'Areas'
@@ -260,7 +274,7 @@ export default function GraphView({
               >
                 {selectedNode.para}
               </span>
-              <h4 className="text-sm font-bold text-white leading-tight">
+              <h4 className="text-xs sm:text-sm font-bold text-white leading-tight">
                 {selectedNode.label}
               </h4>
             </div>
@@ -272,19 +286,19 @@ export default function GraphView({
             </button>
           </div>
 
-          <p className="mt-2.5 text-xs text-slate-300 line-clamp-3 leading-relaxed">
+          <p className="mt-2 text-xs text-slate-300 line-clamp-2 sm:line-clamp-3 leading-relaxed">
             {selectedNode.summary || 'No summary available.'}
           </p>
 
-          <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between">
-            <span className="text-[11px] font-mono text-slate-400 truncate max-w-[180px]">
+          <div className="mt-3 pt-2.5 border-t border-white/10 flex items-center justify-between gap-2">
+            <span className="text-[10px] font-mono text-slate-400 truncate max-w-[130px] sm:max-w-[180px]">
               {selectedNode.id}.md
             </span>
             <button
               onClick={() => onSelectNote(selectedNode.id)}
-              className="px-3 py-1.5 bg-sky-500 hover:bg-sky-400 text-white text-xs font-semibold rounded-lg flex items-center gap-1 shadow-md shadow-sky-500/20 transition-all"
+              className="px-3 py-1.5 bg-sky-500 hover:bg-sky-400 text-white text-xs font-semibold rounded-lg flex items-center gap-1 shadow-md shadow-sky-500/20 transition-all shrink-0"
             >
-              <span>Read Full Note</span>
+              <span>Read Note</span>
               <ArrowUpRight className="w-3.5 h-3.5" />
             </button>
           </div>
