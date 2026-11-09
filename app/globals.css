@@ -4,57 +4,82 @@
 
 @layer base {
   :root {
-    --background: 9 13 22;
-    --foreground: 248 250 252;
+    --bg-canvas: #f8fafc;
+    --bg-canvas-muted: #f1f5f9;
+    --bg-canvas-surface: #ffffff;
+    --bg-canvas-card: #ffffff;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --border-color: rgba(0, 0, 0, 0.08);
+  }
+
+  .dark {
+    --bg-canvas: #090d16;
+    --bg-canvas-muted: #0d1321;
+    --bg-canvas-surface: #111827;
+    --bg-canvas-card: #161f30;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --border-color: rgba(255, 255, 255, 0.08);
   }
 
   body {
-    background-color: #090d16;
-    color: #f8fafc;
+    background-color: var(--bg-canvas);
+    color: var(--text-primary);
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     overflow-x: hidden;
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
 }
 
-/* Custom dark scrollbars */
+/* Custom dark & light scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.6);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.2);
+  background: rgba(148, 163, 184, 0.3);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.4);
+  background: rgba(148, 163, 184, 0.5);
 }
 
 /* Glassmorphism helpers */
 .glass-panel {
-  background: rgba(17, 24, 39, 0.75);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.dark .glass-panel {
+  background: rgba(17, 24, 39, 0.75);
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .glass-card {
-  background: rgba(22, 31, 48, 0.6);
+  background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(8px);
+  border: 1px solid rgba(0, 0, 0, 0.07);
+}
+
+.dark .glass-card {
+  background: rgba(22, 31, 48, 0.6);
   border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .glass-card:hover {
-  border-color: rgba(56, 189, 248, 0.3);
+  border-color: rgba(56, 189, 248, 0.4);
 }
 
 /* Vis.js network container */
 .vis-network {
   outline: none;
 }
-

@@ -14,6 +14,7 @@ type TabType = 'graph' | 'chat' | 'explorer' | 'capture';
 
 export default function HomePage() {
   const [activeTab, setActiveTab] = useState<TabType>('graph');
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [graphData, setGraphData] = useState<GraphData | null>(null);
   const [notes, setNotes] = useState<WikiNoteItem[]>([]);
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
@@ -21,11 +22,30 @@ export default function HomePage() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [apiKey, setApiKey] = useState('');
 
-  // Load API key from localStorage
+  // Load Theme & API key from localStorage
   useEffect(() => {
+    const savedTheme = (localStorage.getItem('secondself_theme') as 'dark' | 'light') || 'dark';
+    setTheme(savedTheme);
+    if (savedTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+
     const savedKey = localStorage.getItem('secondself_groq_api_key') || '';
     setApiKey(savedKey);
   }, []);
+
+  const handleToggleTheme = () => {
+    const nextTheme = theme === 'dark' ? 'light' : 'dark';
+    setTheme(nextTheme);
+    localStorage.setItem('secondself_theme', nextTheme);
+    if (nextTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  };
 
   const handleSaveApiKey = (newKey: string) => {
     setApiKey(newKey);
@@ -68,27 +88,29 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-canvas text-slate-100 overflow-x-hidden">
+    <div className="min-h-screen flex flex-col bg-canvas text-slate-900 dark:text-slate-100 overflow-x-hidden transition-colors">
       {/* Top Navbar */}
       <Navbar
         stats={{
           nodes: graphData?.meta?.note_count || notes.length || 38,
           edges: graphData?.meta?.edge_count || 40,
         }}
+        theme={theme}
+        onToggleTheme={handleToggleTheme}
         onOpenSettings={() => setIsSettingsOpen(true)}
       />
 
       {/* Main Container with responsive padding */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-6 pb-24 md:pb-6 flex flex-col">
         {/* Desktop Navigation Tabs Bar (Hidden on Mobile) */}
-        <div className="hidden md:flex items-center justify-between mb-6 border-b border-white/[0.08] pb-3 flex-wrap gap-3">
-          <div className="flex items-center gap-1.5 p-1 bg-canvas-card border border-white/5 rounded-xl">
+        <div className="hidden md:flex items-center justify-between mb-6 border-b border-slate-200 dark:border-white/[0.08] pb-3 flex-wrap gap-3">
+          <div className="flex items-center gap-1.5 p-1 bg-slate-100 dark:bg-canvas-card border border-slate-200 dark:border-white/5 rounded-xl">
             <button
               onClick={() => setActiveTab('graph')}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
                 activeTab === 'graph'
                   ? 'bg-sky-500 text-white shadow-md shadow-sky-500/20'
-                  : 'text-slate-400 hover:text-white hover:bg-white/5'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-white/5'
               }`}
             >
               <Share2 className="w-3.5 h-3.5" />
@@ -100,7 +122,7 @@ export default function HomePage() {
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
                 activeTab === 'chat'
                   ? 'bg-sky-500 text-white shadow-md shadow-sky-500/20'
-                  : 'text-slate-400 hover:text-white hover:bg-white/5'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-white/5'
               }`}
             >
               <MessageSquare className="w-3.5 h-3.5" />
@@ -112,12 +134,12 @@ export default function HomePage() {
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
                 activeTab === 'explorer'
                   ? 'bg-sky-500 text-white shadow-md shadow-sky-500/20'
-                  : 'text-slate-400 hover:text-white hover:bg-white/5'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-white/5'
               }`}
             >
               <BookOpen className="w-3.5 h-3.5" />
               <span>Knowledge Explorer</span>
-              <span className="ml-1 px-1.5 py-0.2 rounded-full text-[10px] bg-white/10 text-slate-300">
+              <span className="ml-1 px-1.5 py-0.2 rounded-full text-[10px] bg-slate-200 dark:bg-white/10 text-slate-700 dark:text-slate-300">
                 {notes.length || 38}
               </span>
             </button>
@@ -127,7 +149,7 @@ export default function HomePage() {
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
                 activeTab === 'capture'
                   ? 'bg-sky-500 text-white shadow-md shadow-sky-500/20'
-                  : 'text-slate-400 hover:text-white hover:bg-white/5'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-white/5'
               }`}
             >
               <Inbox className="w-3.5 h-3.5" />
@@ -135,8 +157,8 @@ export default function HomePage() {
             </button>
           </div>
 
-          <div className="flex items-center gap-2 text-xs text-slate-400">
-            <span className="w-2 h-2 rounded-full bg-emerald-400" />
+          <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+            <span className="w-2 h-2 rounded-full bg-emerald-500" />
             <span>Vercel Edge Ready</span>
           </div>
         </div>
@@ -148,6 +170,7 @@ export default function HomePage() {
               data={graphData}
               onSelectNote={handleSelectNote}
               highlightedNodes={highlightedNodes}
+              theme={theme}
             />
           )}
 
@@ -172,14 +195,14 @@ export default function HomePage() {
       </main>
 
       {/* Mobile Bottom Navigation Bar (Phone Native Feel) */}
-      <nav className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-canvas-surface/95 backdrop-blur-xl border-t border-white/[0.1] px-2 py-1.5 pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-2xl">
+      <nav className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-canvas-surface/95 backdrop-blur-xl border-t border-slate-200 dark:border-white/[0.1] px-2 py-1.5 pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-2xl transition-colors">
         <div className="grid grid-cols-4 gap-1">
           <button
             onClick={() => setActiveTab('graph')}
             className={`flex flex-col items-center justify-center py-1.5 px-1 rounded-xl transition-all ${
               activeTab === 'graph'
-                ? 'text-sky-400 bg-sky-500/10'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'text-sky-500 dark:text-sky-400 bg-sky-500/10'
+                : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
             }`}
           >
             <Share2 className="w-5 h-5 mb-0.5" />
@@ -190,8 +213,8 @@ export default function HomePage() {
             onClick={() => setActiveTab('chat')}
             className={`flex flex-col items-center justify-center py-1.5 px-1 rounded-xl transition-all ${
               activeTab === 'chat'
-                ? 'text-sky-400 bg-sky-500/10'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'text-sky-500 dark:text-sky-400 bg-sky-500/10'
+                : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
             }`}
           >
             <MessageSquare className="w-5 h-5 mb-0.5" />
@@ -202,8 +225,8 @@ export default function HomePage() {
             onClick={() => setActiveTab('explorer')}
             className={`flex flex-col items-center justify-center py-1.5 px-1 rounded-xl transition-all ${
               activeTab === 'explorer'
-                ? 'text-sky-400 bg-sky-500/10'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'text-sky-500 dark:text-sky-400 bg-sky-500/10'
+                : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
             }`}
           >
             <BookOpen className="w-5 h-5 mb-0.5" />
@@ -214,8 +237,8 @@ export default function HomePage() {
             onClick={() => setActiveTab('capture')}
             className={`flex flex-col items-center justify-center py-1.5 px-1 rounded-xl transition-all ${
               activeTab === 'capture'
-                ? 'text-sky-400 bg-sky-500/10'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'text-sky-500 dark:text-sky-400 bg-sky-500/10'
+                : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
             }`}
           >
             <Inbox className="w-5 h-5 mb-0.5" />

@@ -9,10 +9,10 @@ module.exports = {
     extend: {
       colors: {
         canvas: {
-          DEFAULT: '#090D16',
-          muted: '#0d1321',
-          surface: '#111827',
-          card: '#161F30',
+          DEFAULT: 'var(--bg-canvas)',
+          muted: 'var(--bg-canvas-muted)',
+          surface: 'var(--bg-canvas-surface)',
+          card: 'var(--bg-canvas-card)',
         },
         para: {
           projects: '#EF4444',
@@ -30,4 +30,3 @@ module.exports = {
   },
   plugins: [],
 };
-
