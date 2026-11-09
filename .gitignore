@@ -10,12 +10,9 @@ __pycache__/
 .mypy_cache/
 .DS_Store
 
-# Local captures (keep private; commit sanitized wiki only for deploy)
+# Local captures
 raw/*
 !raw/.gitkeep
-
-# Derived data (optional: commit graph/embeddings for deploy)
-# data/embeddings.json
 
 # ML caches
 .cache/
@@ -24,7 +21,9 @@ raw/*
 # Scratch & temporary files
 Test.txt
 *.log
-.streamlit/credentials.toml
+.streamlit/
+.agents/
+/graph.json
 
 # Node & Next.js
 node_modules/
