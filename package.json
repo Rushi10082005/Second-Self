@@ -1,0 +1,49 @@
+{
+  "name": "second-brain",
+  "version": "1.0.0",
+  "description": "[![Python 3.10+](https://img.shields.io/badge/python-3.10+-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org/) [![Groq Cloud](https://img.shields.io/badge/Groq-Llama%203.3%2070B-f55036.svg?style=flat)](https://groq.com/) [![Embeddings](https://img.shields.io/badge/Embeddings-all--MiniLM--L6--v2-blue.svg?style=flat)](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2) [![Tests](https://img.shields.io/badge/Tests-33%20Passed-success.svg?style=flat)]() [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "tests"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rushi10082005/Second-Self.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Rushi10082005/Second-Self/issues"
+  },
+  "homepage": "https://github.com/Rushi10082005/Second-Self#readme",
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "gray-matter": "^4.0.3",
+    "groq-sdk": "^1.6.0",
+    "lucide-react": "^1.70.0",
+    "next": "^14.2.35",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-markdown": "^10.1.0",
+    "tailwind-merge": "^3.7.0",
+    "vis-network": "^10.1.5"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "autoprefixer": "^10.6.2",
+    "postcss": "^8.5.32",
+    "tailwindcss": "^3.4.19",
+    "typescript": "^5.9.3"
+  }
+}

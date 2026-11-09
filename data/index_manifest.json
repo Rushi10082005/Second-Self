@@ -100,14 +100,80 @@
   ],
   "note_content_hashes": {},
   "last_classify_at": "2026-08-02T22:25:15.146465+00:00",
-  "last_link_at": "2026-08-02T22:25:26.693097+00:00",
-  "last_graph_at": "2026-08-03T20:32:56.923684+00:00",
+  "last_link_at": "2026-10-01T07:34:24.231708+00:00",
+  "last_graph_at": "2026-11-09T10:24:37.493741+00:00",
   "counts": {
-    "captures": 154,
+    "captures": 174,
     "wiki_notes": 38,
     "links_created": 20,
     "graph_nodes": 1,
     "graph_edges": 0
   },
-  "errors": []
+  "errors": [
+    {
+      "capture_id": "7e1fb7c9-938e-4348-a433-eb341fbda0a7",
+      "timestamp": "2026-10-01T07:28:02.710138+00:00",
+      "error": "LLM json completion failed after 3 attempts: Error code: 404 - {'error': {'message': 'The model `llama-3.3-70b-versatile` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'code': 'model_not_found'}}"
+    },
+    {
+      "capture_id": "031e1a7f-e0c8-4c5e-a279-63ea2f48ae0b",
+      "timestamp": "2026-10-01T07:28:17.005698+00:00",
+      "error": "LLM json completion failed after 3 attempts: Error code: 404 - {'error': {'message': 'The model `llama-3.3-70b-versatile` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'code': 'model_not_found'}}"
+    },
+    {
+      "capture_id": "5db17f58-2e7a-4954-8dd3-01dfb47c941f",
+      "timestamp": "2026-10-01T07:28:31.216084+00:00",
+      "error": "LLM json completion failed after 3 attempts: Error code: 404 - {'error': {'message': 'The model `llama-3.3-70b-versatile` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'code': 'model_not_found'}}"
+    },
+    {
+      "capture_id": "35c45a3d-664d-460b-a736-673cf5b29f5c",
+      "timestamp": "2026-10-01T07:28:45.846253+00:00",
+      "error": "LLM json completion failed after 3 attempts: Error code: 404 - {'error': {'message': 'The model `llama-3.3-70b-versatile` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'code': 'model_not_found'}}"
+    },
+    {
+      "capture_id": "c6de4bed-f7ce-4cbb-ac2f-26fcbfd66a0a",
+      "timestamp": "2026-10-01T07:29:00.446817+00:00",
+      "error": "LLM json completion failed after 3 attempts: Error code: 404 - {'error': {'message': 'The model `llama-3.3-70b-versatile` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'code': 'model_not_found'}}"
+    },
+    {
+      "capture_id": "d9c1646b-20a0-42b2-8a8e-2c337a38d149",
+      "timestamp": "2026-10-01T07:29:16.661281+00:00",
+      "error": "LLM json completion failed after 3 attempts: Error code: 404 - {'error': {'message': 'The model `llama-3.3-70b-versatile` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'code': 'model_not_found'}}"
+    },
+    {
+      "capture_id": "42d3f54d-4c19-468b-8461-965c86492bc6",
+      "timestamp": "2026-10-01T07:29:31.582071+00:00",
+      "error": "LLM json completion failed after 3 attempts: Error code: 404 - {'error': {'message': 'The model `llama-3.3-70b-versatile` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'code': 'model_not_found'}}"
+    },
+    {
+      "capture_id": "45a07b18-7180-4318-8339-518db2ad39dc",
+      "timestamp": "2026-10-01T07:29:46.094643+00:00",
+      "error": "LLM json completion failed after 3 attempts: Error code: 404 - {'error': {'message': 'The model `llama-3.3-70b-versatile` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'code': 'model_not_found'}}"
+    },
+    {
+      "capture_id": "d0c21f11-48c6-4a6b-8cf4-301fe8b86570",
+      "timestamp": "2026-10-01T07:30:04.342784+00:00",
+      "error": "LLM json completion failed after 3 attempts: Error code: 404 - {'error': {'message': 'The model `llama-3.3-70b-versatile` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'code': 'model_not_found'}}"
+    },
+    {
+      "capture_id": "09c9285a-64a3-4982-9300-622c75f395e0",
+      "timestamp": "2026-10-01T07:31:31.512149+00:00",
+      "error": "LLM json completion failed after 3 attempts: Error code: 404 - {'error': {'message': 'The model `llama-3.3-70b-versatile` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'code': 'model_not_found'}}"
+    },
+    {
+      "capture_id": "953620b1-a356-4e02-ad62-60d0179def5b",
+      "timestamp": "2026-10-01T07:34:02.709868+00:00",
+      "error": "LLM json completion failed after 3 attempts: Error code: 404 - {'error': {'message': 'The model `llama-3.3-70b-versatile` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'code': 'model_not_found'}}"
+    },
+    {
+      "capture_id": "be7bdae8-1af0-4a3d-a1c0-1a8648ad5a00",
+      "timestamp": "2026-10-01T07:34:24.158007+00:00",
+      "error": "LLM json completion failed after 3 attempts: Error code: 404 - {'error': {'message': 'The model `llama-3.3-70b-versatile` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'code': 'model_not_found'}}"
+    },
+    {
+      "capture_id": "7e1fb7c9-938e-4348-a433-eb341fbda0a7",
+      "timestamp": "2026-10-05T06:55:42.123324+00:00",
+      "error": "LLM json completion failed after 3 attempts: Error code: 404 - {'error': {'message': 'The model `llama-3.3-70b-versatile` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'code': 'model_not_found'}}"
+    }
+  ]
 }

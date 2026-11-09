@@ -24,3 +24,14 @@ raw/*
 # Scratch & temporary files
 Test.txt
 *.log
+.streamlit/credentials.toml
+
+# Node & Next.js
+node_modules/
+.next/
+out/
+build/
+dist/
+.vercel/
+*.tsbuildinfo
+next-env.d.ts
