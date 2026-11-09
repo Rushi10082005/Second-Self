@@ -9,6 +9,7 @@ import ChatView from '../components/ChatView';
 import ExplorerView from '../components/ExplorerView';
 import CaptureView from '../components/CaptureView';
 import { GraphData, WikiNoteItem } from './lib/knowledge';
+import { exportVaultToZip, triggerDownloadBlob } from './lib/exporter';
 
 type TabType = 'graph' | 'chat' | 'explorer' | 'capture';
 
@@ -124,6 +125,15 @@ export default function HomePage() {
     });
   };
 
+  const handleExportVault = async () => {
+    try {
+      const blob = await exportVaultToZip(notes, graphData);
+      triggerDownloadBlob(blob, `secondself-vault-${new Date().toISOString().slice(0, 10)}.zip`);
+    } catch (err: any) {
+      alert(`Export error: ${err?.message}`);
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-canvas text-slate-900 dark:text-slate-100 overflow-x-hidden transition-colors">
       {/* Top Navbar */}
@@ -135,6 +145,7 @@ export default function HomePage() {
         theme={theme}
         onToggleTheme={handleToggleTheme}
         onOpenSettings={() => setIsSettingsOpen(true)}
+        onExportVault={handleExportVault}
       />
 
       {/* Main Container with responsive padding */}
