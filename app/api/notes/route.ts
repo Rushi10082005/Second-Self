@@ -103,6 +103,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       success: true,
       note: updatedNote,
+      markdown: frontmatterLines,
+      path: `wiki/${normalizedCategory}/${noteSlug}.md`,
       message: 'Note saved successfully!',
     });
   } catch (err: any) {

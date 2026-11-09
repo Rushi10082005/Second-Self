@@ -11,18 +11,31 @@ import {
   Square,
   Loader2,
   Volume2,
+  UploadCloud,
+  FileUp,
+  GitCommit,
 } from 'lucide-react';
 
 interface CaptureViewProps {
   apiKey?: string;
+  githubToken?: string;
+  githubRepo?: string;
 }
 
-export default function CaptureView({ apiKey = '' }: CaptureViewProps) {
+export default function CaptureView({
+  apiKey = '',
+  githubToken = '',
+  githubRepo = 'Rushi10082005/Second-Self',
+}: CaptureViewProps) {
   const [captureType, setCaptureType] = useState<'note' | 'link'>('note');
   const [content, setContent] = useState('');
   const [url, setUrl] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
+
+  // File drag & drop states
+  const [isDragging, setIsDragging] = useState(false);
+  const [droppedFileName, setDroppedFileName] = useState<string | null>(null);
 
   // Voice recording states
   const [isRecording, setIsRecording] = useState(false);
@@ -30,6 +43,7 @@ export default function CaptureView({ apiKey = '' }: CaptureViewProps) {
   const [transcribing, setTranscribing] = useState(false);
   const [voiceNotice, setVoiceNotice] = useState<string | null>(null);
 
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const timerIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -43,6 +57,59 @@ export default function CaptureView({ apiKey = '' }: CaptureViewProps) {
       }
     };
   }, []);
+
+  const handleFileRead = async (file: File) => {
+    try {
+      setDroppedFileName(file.name);
+      const extension = file.name.split('.').pop()?.toLowerCase();
+
+      if (['md', 'txt', 'csv', 'json', 'py', 'ts', 'js'].includes(extension || '')) {
+        const text = await file.text();
+        setContent((prev) => (prev ? `${prev}\n\n# Imported from ${file.name}:\n\n${text}` : text));
+        setVoiceNotice(`📄 Imported ${file.name} (${(file.size / 1024).toFixed(1)} KB)`);
+        setTimeout(() => setVoiceNotice(null), 5000);
+      } else if (extension === 'pdf') {
+        // PDF client-side text chunking
+        const text = await file.text();
+        // Extract basic printable ASCII string sequences from PDF stream
+        const readableMatch = text.match(/[A-Za-z0-9\s.,!?:;'"()-]{5,}/g);
+        const extracted = readableMatch ? readableMatch.join(' ').slice(0, 3000) : '';
+        const bodyText = extracted || `[Document content: ${file.name} - ${(file.size / 1024).toFixed(1)} KB]`;
+        setContent((prev) => (prev ? `${prev}\n\n# Document ${file.name}\n\n${bodyText}` : bodyText));
+        setVoiceNotice(`📄 Extracted text from PDF: ${file.name}`);
+        setTimeout(() => setVoiceNotice(null), 5000);
+      } else {
+        alert('Unsupported file format. Please upload Markdown (.md), text (.txt), PDF, CSV, or JSON.');
+      }
+    } catch (err: any) {
+      alert(`Error reading file: ${err?.message}`);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleDrop = async (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      const file = e.dataTransfer.files[0];
+      await handleFileRead(file);
+    }
+  };
+
+  const handleFileInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      await handleFileRead(file);
+    }
+  };
 
   const startRecording = async () => {
     try {
@@ -64,7 +131,6 @@ export default function CaptureView({ apiKey = '' }: CaptureViewProps) {
       };
 
       mediaRecorder.onstop = async () => {
-        // Stop audio tracks
         stream.getTracks().forEach((track) => track.stop());
 
         const audioBlob = new Blob(audioChunksRef.current, {
@@ -172,9 +238,33 @@ export default function CaptureView({ apiKey = '' }: CaptureViewProps) {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to capture');
 
-      setSuccessMsg(data.message || 'Capture successfully saved to SecondSelf inbox!');
+      let gitMsg = '';
+      // If GitHub Token configured, sync inbox capture to GitHub repository
+      if (githubToken && data.id) {
+        try {
+          const syncRes = await fetch('/api/sync/github', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              path: `wiki/inbox/${data.id}.md`,
+              content: `---\ntitle: "Capture ${data.id.slice(0, 8)}"\ncreated: "${new Date().toISOString()}"\nsource: "${captureType}"\n---\n\n${payloadContent}`,
+              message: `feat(inbox): capture ${data.id.slice(0, 8)} via SecondSelf`,
+              token: githubToken,
+              repo: githubRepo,
+            }),
+          });
+          if (syncRes.ok) {
+            gitMsg = ' & committed to GitHub repository';
+          }
+        } catch {
+          // Non-blocking GitHub sync
+        }
+      }
+
+      setSuccessMsg(`Capture successfully saved to SecondSelf inbox${gitMsg}!`);
       setContent('');
       setUrl('');
+      setDroppedFileName(null);
       setTimeout(() => setSuccessMsg(null), 5000);
     } catch (err: any) {
       alert(`Error saving capture: ${err?.message}`);
@@ -196,7 +286,7 @@ export default function CaptureView({ apiKey = '' }: CaptureViewProps) {
                 Quick Capture Inbox
               </h2>
               <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">
-                Text thoughts, web bookmarks, or instant voice memos.
+                Text thoughts, file drag-and-drop, web links, or instant voice memos.
               </p>
             </div>
           </div>
@@ -218,7 +308,7 @@ export default function CaptureView({ apiKey = '' }: CaptureViewProps) {
             }`}
           >
             <FileText className="w-3.5 h-3.5" />
-            <span>Note / Thought</span>
+            <span>Note / Thought / File</span>
           </button>
 
           <button
@@ -291,6 +381,46 @@ export default function CaptureView({ apiKey = '' }: CaptureViewProps) {
           </div>
         ) : null}
 
+        {/* Drag and Drop Zone */}
+        {captureType === 'note' && (
+          <div
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            onClick={() => fileInputRef.current?.click()}
+            className={`mb-3.5 p-3.5 rounded-xl border-2 border-dashed transition-all cursor-pointer flex items-center justify-between gap-3 ${
+              isDragging
+                ? 'border-sky-500 bg-sky-500/10 scale-[1.01]'
+                : 'border-slate-200 dark:border-white/10 hover:border-sky-500/50 bg-slate-50 dark:bg-white/[0.01]'
+            }`}
+          >
+            <div className="flex items-center gap-2.5">
+              <UploadCloud className="w-4 h-4 text-sky-500 shrink-0" />
+              <div className="text-[11px] text-slate-600 dark:text-slate-400">
+                {droppedFileName ? (
+                  <span className="font-semibold text-sky-600 dark:text-sky-400">
+                    File loaded: {droppedFileName}
+                  </span>
+                ) : (
+                  <span>
+                    Drag & drop <strong>.md, .txt, .pdf, .csv</strong> or click to upload
+                  </span>
+                )}
+              </div>
+            </div>
+            <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-slate-200 dark:bg-white/10 text-slate-700 dark:text-slate-300">
+              Browse
+            </span>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".md,.txt,.pdf,.csv,.json,.py,.ts"
+              onChange={handleFileInputChange}
+              className="hidden"
+            />
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
           {captureType === 'link' && (
             <div>
@@ -332,7 +462,7 @@ export default function CaptureView({ apiKey = '' }: CaptureViewProps) {
               rows={4}
               placeholder={
                 captureType === 'note'
-                  ? 'Enter ideas, meeting takeaways, or click Voice Memo to speak...'
+                  ? 'Enter ideas, meeting takeaways, or click Voice Memo / Drop File...'
                   : 'Add brief context on why you saved this link...'
               }
               value={content}
@@ -359,11 +489,19 @@ export default function CaptureView({ apiKey = '' }: CaptureViewProps) {
 
         {/* Pipeline Info Card */}
         <div className="mt-4 sm:mt-6 p-3 sm:p-4 rounded-xl bg-slate-100 dark:bg-white/[0.02] border border-slate-200 dark:border-white/5 space-y-1.5">
-          <div className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-            Autonomous Multimodal Pipeline
+          <div className="flex items-center justify-between">
+            <div className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+              Autonomous Multimodal Pipeline
+            </div>
+            {githubToken && (
+              <div className="flex items-center gap-1 text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">
+                <GitCommit className="w-3 h-3" />
+                <span>GitHub Auto-Sync On</span>
+              </div>
+            )}
           </div>
           <p className="text-[11px] sm:text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-            Spoken voice notes or text entries are automatically categorized into <strong>PARA</strong> via Groq Llama 3.3, linked into your <strong>knowledge graph</strong>, and indexed for instant <strong>RAG queries</strong>.
+            Spoken voice notes, uploaded files, or text entries are automatically categorized into <strong>PARA</strong> via Groq Llama 3.3, linked into your <strong>knowledge graph</strong>, and indexed for instant <strong>RAG queries</strong>.
           </p>
         </div>
       </div>

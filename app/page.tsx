@@ -22,8 +22,10 @@ export default function HomePage() {
   const [highlightedNodes, setHighlightedNodes] = useState<string[]>([]);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [apiKey, setApiKey] = useState('');
+  const [githubToken, setGithubToken] = useState('');
+  const [githubRepo, setGithubRepo] = useState('Rushi10082005/Second-Self');
 
-  // Load Theme & API key from localStorage
+  // Load Theme, API key & GitHub sync config from localStorage
   useEffect(() => {
     const savedTheme = (localStorage.getItem('secondself_theme') as 'dark' | 'light') || 'dark';
     setTheme(savedTheme);
@@ -35,6 +37,12 @@ export default function HomePage() {
 
     const savedKey = localStorage.getItem('secondself_groq_api_key') || '';
     setApiKey(savedKey);
+
+    const savedToken = localStorage.getItem('secondself_github_token') || '';
+    setGithubToken(savedToken);
+
+    const savedRepo = localStorage.getItem('secondself_github_repo') || 'Rushi10082005/Second-Self';
+    setGithubRepo(savedRepo);
   }, []);
 
   const handleToggleTheme = () => {
@@ -51,6 +59,16 @@ export default function HomePage() {
   const handleSaveApiKey = (newKey: string) => {
     setApiKey(newKey);
     localStorage.setItem('secondself_groq_api_key', newKey);
+  };
+
+  const handleSaveGithubToken = (newToken: string) => {
+    setGithubToken(newToken);
+    localStorage.setItem('secondself_github_token', newToken);
+  };
+
+  const handleSaveGithubRepo = (newRepo: string) => {
+    setGithubRepo(newRepo);
+    localStorage.setItem('secondself_github_repo', newRepo);
   };
 
   // Fetch initial graph and notes data
@@ -146,6 +164,7 @@ export default function HomePage() {
         onToggleTheme={handleToggleTheme}
         onOpenSettings={() => setIsSettingsOpen(true)}
         onExportVault={handleExportVault}
+        hasGitSync={Boolean(githubToken)}
       />
 
       {/* Main Container with responsive padding */}
@@ -218,6 +237,7 @@ export default function HomePage() {
               data={graphData}
               onSelectNote={handleSelectNote}
               highlightedNodes={highlightedNodes}
+              onClearHighlight={() => setHighlightedNodes([])}
               theme={theme}
             />
           )}
@@ -227,6 +247,7 @@ export default function HomePage() {
               apiKey={apiKey}
               onSelectNote={handleSelectNote}
               onHighlightGraph={handleHighlightGraph}
+              onViewGraph={() => setActiveTab('graph')}
             />
           )}
 
@@ -236,10 +257,18 @@ export default function HomePage() {
               selectedSlug={selectedSlug}
               onSelectSlug={(slug) => setSelectedSlug(slug)}
               onNoteSaved={handleNoteSaved}
+              githubToken={githubToken}
+              githubRepo={githubRepo}
             />
           )}
 
-          {activeTab === 'capture' && <CaptureView apiKey={apiKey} />}
+          {activeTab === 'capture' && (
+            <CaptureView
+              apiKey={apiKey}
+              githubToken={githubToken}
+              githubRepo={githubRepo}
+            />
+          )}
         </div>
       </main>
 
@@ -302,6 +331,10 @@ export default function HomePage() {
         onClose={() => setIsSettingsOpen(false)}
         apiKey={apiKey}
         onSaveApiKey={handleSaveApiKey}
+        githubToken={githubToken}
+        onSaveGithubToken={handleSaveGithubToken}
+        githubRepo={githubRepo}
+        onSaveGithubRepo={handleSaveGithubRepo}
       />
     </div>
   );

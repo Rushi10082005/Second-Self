@@ -65,3 +65,4 @@ export function triggerDownloadBlob(blob: Blob, filename: string) {
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
+

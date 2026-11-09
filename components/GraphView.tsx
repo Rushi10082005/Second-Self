@@ -8,6 +8,7 @@ interface GraphViewProps {
   data: GraphData | null;
   onSelectNote: (slug: string) => void;
   highlightedNodes?: string[];
+  onClearHighlight?: () => void;
   theme?: 'dark' | 'light';
 }
 
@@ -22,6 +23,7 @@ export default function GraphView({
   data,
   onSelectNote,
   highlightedNodes = [],
+  onClearHighlight,
   theme = 'dark',
 }: GraphViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -77,17 +79,27 @@ export default function GraphView({
 
       const visEdges = data!.edges
         .filter((e) => allowedIds.has(e.source) && allowedIds.has(e.target))
-        .map((e, idx) => ({
-          id: `edge-${e.source}-${e.target}-${idx}`,
-          from: e.source,
-          to: e.target,
-          color: {
-            color: e.type === 'explicit_link' ? '#38bdf8' : edgeColor,
-            highlight: '#38bdf8',
-          },
-          width: e.type === 'explicit_link' ? 2 : 1,
-          dashes: e.type !== 'explicit_link',
-        }));
+        .map((e, idx) => {
+          const isEdgeHighlighted =
+            (highlightedNodes.includes(e.source) && highlightedNodes.includes(e.target)) ||
+            (highlightedNodes.length === 1 && (e.source === highlightedNodes[0] || e.target === highlightedNodes[0]));
+
+          return {
+            id: `edge-${e.source}-${e.target}-${idx}`,
+            from: e.source,
+            to: e.target,
+            color: {
+              color: isEdgeHighlighted
+                ? '#38bdf8'
+                : e.type === 'explicit_link'
+                ? '#38bdf8'
+                : edgeColor,
+              highlight: '#38bdf8',
+            },
+            width: isEdgeHighlighted ? 3 : e.type === 'explicit_link' ? 2 : 1,
+            dashes: isEdgeHighlighted ? false : e.type !== 'explicit_link',
+          };
+        });
 
       const networkData = {
         nodes: new vis.DataSet(visNodes),
@@ -114,6 +126,17 @@ export default function GraphView({
 
       const network = new vis.Network(containerRef.current!, networkData, options);
       networkRef.current = network;
+
+      if (highlightedNodes.length > 0) {
+        setTimeout(() => {
+          try {
+            network.fit({
+              nodes: highlightedNodes,
+              animation: { duration: 750, easingFunction: 'easeInOutQuad' },
+            });
+          } catch {}
+        }, 300);
+      }
 
       network.on('click', (params: any) => {
         if (params.nodes && params.nodes.length > 0) {
@@ -320,6 +343,26 @@ export default function GraphView({
               <ArrowUpRight className="w-3.5 h-3.5" />
             </button>
           </div>
+        </div>
+      )}
+
+      {/* Reasoning Path Active Floating Banner */}
+      {highlightedNodes.length > 0 && (
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-3 px-3.5 py-2 glass-panel border border-sky-500/40 rounded-xl shadow-2xl animate-in fade-in slide-in-from-bottom-2 duration-300">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-sky-400 animate-ping" />
+            <span className="text-xs font-semibold text-sky-600 dark:text-sky-300">
+              Graph-RAG Path Active ({highlightedNodes.length} nodes)
+            </span>
+          </div>
+          {onClearHighlight && (
+            <button
+              onClick={onClearHighlight}
+              className="px-2 py-0.5 rounded text-[10px] font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white bg-black/5 dark:hover:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 transition-all"
+            >
+              Clear
+            </button>
+          )}
         </div>
       )}
     </div>

@@ -16,6 +16,7 @@ interface ChatViewProps {
   apiKey: string;
   onSelectNote: (slug: string) => void;
   onHighlightGraph: (slugs: string[]) => void;
+  onViewGraph?: () => void;
 }
 
 const SAMPLE_QUERIES = [
@@ -29,6 +30,7 @@ export default function ChatView({
   apiKey,
   onSelectNote,
   onHighlightGraph,
+  onViewGraph,
 }: ChatViewProps) {
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -250,10 +252,22 @@ export default function ChatView({
                 {/* Retrieved Context Sources (if present) */}
                 {msg.sources && msg.sources.length > 0 && (
                   <div className="mt-2.5 space-y-1.5 animate-in fade-in duration-300">
-                    <span className="text-[10px] sm:text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1">
-                      <BookOpen className="w-3 h-3 text-sky-500 dark:text-sky-400" />
-                      Sources ({msg.sources.length})
-                    </span>
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] sm:text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1">
+                        <BookOpen className="w-3 h-3 text-sky-500 dark:text-sky-400" />
+                        Sources ({msg.sources.length})
+                      </span>
+                      <button
+                        onClick={() => {
+                          onHighlightGraph(msg.sources!.map((s) => s.note_id));
+                          if (onViewGraph) onViewGraph();
+                        }}
+                        className="flex items-center gap-1 text-[10px] font-semibold text-sky-600 dark:text-sky-400 hover:text-sky-500 dark:hover:text-sky-300 transition-colors"
+                      >
+                        <Sparkles className="w-3 h-3" />
+                        <span>View Path in Brain</span>
+                      </button>
+                    </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-1">
                       {msg.sources.map((src, sIdx) => (

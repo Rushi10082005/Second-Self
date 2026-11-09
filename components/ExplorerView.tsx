@@ -23,6 +23,8 @@ interface ExplorerViewProps {
   selectedSlug: string | null;
   onSelectSlug: (slug: string) => void;
   onNoteSaved?: (note: WikiNoteItem) => void;
+  githubToken?: string;
+  githubRepo?: string;
 }
 
 export default function ExplorerView({
@@ -30,6 +32,8 @@ export default function ExplorerView({
   selectedSlug,
   onSelectSlug,
   onNoteSaved,
+  githubToken = '',
+  githubRepo = 'Rushi10082005/Second-Self',
 }: ExplorerViewProps) {
   const [filterCategory, setFilterCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -135,6 +139,25 @@ export default function ExplorerView({
       if (onNoteSaved && data.note) {
         onNoteSaved(data.note);
         onSelectSlug(data.note.slug);
+      }
+
+      // If GitHub sync configured, persist to GitHub repository
+      if (githubToken && data.path && data.markdown) {
+        try {
+          await fetch('/api/sync/github', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              path: data.path,
+              content: data.markdown,
+              message: `feat(wiki): update ${data.note.title} via SecondSelf`,
+              token: githubToken,
+              repo: githubRepo,
+            }),
+          });
+        } catch {
+          // Non-blocking sync
+        }
       }
 
       setSaveSuccess(true);
