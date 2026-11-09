@@ -228,7 +228,7 @@ export default function HomePage() {
             />
           )}
 
-          {activeTab === 'capture' && <CaptureView />}
+          {activeTab === 'capture' && <CaptureView apiKey={apiKey} />}
         </div>
       </main>
 
